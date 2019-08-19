@@ -28,6 +28,7 @@ abstract class ChessPiece {
   ArrayList<MoveSpace> getMovesFromSpaces(ArrayList<PieceSpace> arr) {
     ArrayList<MoveSpace> moves = new ArrayList<MoveSpace>();
     for(PieceSpace p : arr) {
+      if(p == null) continue;
       if(p.piece != null) {
         if(p.piece.owner != this.owner) {
           moves.add(new MoveSpace(p, true));
@@ -44,14 +45,22 @@ abstract class ChessPiece {
     yChange *= -1;
     int x = c + xChange;
     int y = r + yChange;
-    while(x >= 0 && x < 8 && y >= 0 && y < 8) {
+    while(inBounds(x, y)) {
       arr.add(spaces[y][x]);
       if(spaces[y][x].piece != null) break;
       x += xChange;
       y += yChange;
     }
     return arr;
-    
+  }
+  
+  PieceSpace canMove(int xChange, int yChange) {
+    if(!inBounds(r + yChange, c + xChange)) return null;
+    return spaces[r + yChange][c + xChange];
+  }
+  
+  boolean inBounds(int x, int y) {
+    return x >= 0 && x < 8 && y >= 0 && y < 8;
   }
   
   void pushAll(float x, float y) {

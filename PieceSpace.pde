@@ -11,15 +11,20 @@ class PieceSpace {
 }  
   
   void show() {
-    color c;
-    if(square.isHovered()) {
-        int bright = + 33;
+    show(-1);
+  }
+  
+  void show(color c) {
+    if(c == -1) { //no color passed
+      if(square.isHovered()) {
+        int bright = + 22;
         c = color(red(col) + bright, 
                   green(col) + bright,
                   blue(col) + bright);
       } else {
         c = col;
       }
+    }
     pushStyle();
       noStroke();
       fill(c);
@@ -29,7 +34,7 @@ class PieceSpace {
          square.sizeY); 
     popStyle();
     if(piece != null) {
-    piece.show(square.center.x, square.center.y);
+      piece.show(square.center.x, square.center.y);
     }
   }
 }

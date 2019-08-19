@@ -16,9 +16,9 @@ class Bishop extends ChessPiece {
     pushAll(x, y);
       ellipse(0, 15, 25, 50); // body
       rect(0, 40, 45, -4); // foundation
-      rect(0, -15, 30, -4); // head foundation
-      triangle(0, -45, -10, -20, 10, -20); // head
-      circle(0, -47, 10);
+      rect(0, -13, 30, -4); // head foundation
+      triangle(0, -45, -12, -18, 12, -18); // head
+      circle(0, -44, 10);
     popAll();
   }
 }

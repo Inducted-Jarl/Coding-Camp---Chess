@@ -23,11 +23,14 @@ class Board {
        
       }
     }
+    /*
     addPiece(3, 4, new Rook(p1));
     addPiece(3, 2, new Pawn(p1));
     addPiece(1, 4, new Pawn(p2));
     addPiece(2, 5, new Bishop(p2));
-    //fillBoard(p1, p2);
+    addPiece(5, 6, new Queen(p1));
+    */
+    fillBoard(p1, p2);
   }
   
   void fillBoard(Player p1, Player p2) {
@@ -58,23 +61,6 @@ class Board {
       for(int c = 0; c < 8; c++) {
         PieceSpace s = spaces[r][c];
         s.show();
-       }
-    }
-    for(int r = 0; r < 8; r ++) {
-      for(int c = 0; c < 8; c++) {
-        PieceSpace s = spaces[r][c];
-        if(s.square.isHovered() && s.piece != null) {
-          ArrayList<MoveSpace> arr = s.piece.getLegalMoves();
-          for(MoveSpace m : arr) {
-            PVector v = m.space.square.center;
-            pushStyle();
-              if(m.isTake) fill(148, 244, 148);
-              else fill(71, 71, 254);
-              noStroke();
-              circle(v.x, v.y, 10);
-            popStyle();
-          }
-        }
       }
     }
   }
