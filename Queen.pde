@@ -26,11 +26,19 @@ class Queen extends ChessPiece {
     pushAll(x, y);
   
         ellipse(0, 13, 30, 55);
-        rect(0, 40, 55, 5);
-        rect(0, -15, 45, 5);
-        triangle(0, -45, 12, -20, -12, -20);
-        triangle(-25, -35, -13, -10, -37, -20);
+        rect(0, 40, 65, 5);
+        rect(0, -15, 55, 5);
+        triangle(0, -45, 12, -20, -12, -20); // center tri
+        triangle(-20, -45, -13, -20, -27, -20); // left tri
+        triangle(20, -45, 13, -20, 27, -20); // right tri
+        
+        
+        circle(0, -45, 10);
         
         popAll();
+  }
+  
+  void diamond(float x, float y, float w, float h) {
+   quad(x + w/2, y, x, y + h/2, x - w/2, y, x, y - h/2); 
   }
 }

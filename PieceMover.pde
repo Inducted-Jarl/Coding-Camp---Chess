@@ -12,7 +12,6 @@ class PieceMover {
   }
   
   void update() {
-    
      // find hovered space and settting selcted space if clicked
      PieceSpace hovered = null;
      outer: for(int r = 0; r < 8; r ++) {
@@ -21,30 +20,20 @@ class PieceMover {
          if(s.square.isHovered()) {
            // found hovered square
            if(s.piece != null && s.piece.owner == turn) {
-         // piece on same team
-         hovered = s;
-         if(s.square.isClicked()) {
-           if(s == selected) selected = null; //unselected
-           else selected = s; // selected new square
-         }
-       } else if(selected != null && s.square.isClicked()) {
-         // trying to move, check if valid move
-         ArrayList<MoveSpace> moves = selected.piece.getLegalMoves();
-         for(MoveSpace move : moves) {
-           if(move.space == s) {
-             // valid move
-             movePiece(selected, s);
-             s.piece.setPos(r, c);
-             selected = null;
-             switchPlayer();
-             return;
+             // piece on same team
+             hovered = s;
+             if(s.square.isClicked()) {
+               if(s == selected) selected = null; //unselected
+               else selected = s; // selected new square
+             }
+           } else if(selected != null && s.square.isClicked()) {
+             // trying to move, check if valid move
+             tryToMove(s, r, c);
            }
+           break outer; //stop searching
          }
        }
-       break outer; //stop searching
-    }
-  }
-}
+     }
      
      // setting showMoveSpace to which ever should be show
      PieceSpace showMoveSpace = null;
@@ -78,11 +67,24 @@ class PieceMover {
     to.piece = from.piece;
     from.piece = null;
     from = null;
+    to.piece.hasMoved =  true;
   }
   
   void switchPlayer() {
     if(turn == p1) turn = p2;
     else turn = p1;
+  }
     
+  void tryToMove(PieceSpace s, int r, int c) {
+    ArrayList<MoveSpace> moves = selected.piece.getLegalMoves();
+    for(MoveSpace move : moves) {
+      if(move.space == s) {
+        // valid move
+        movePiece(selected, s);
+        s.piece.setPos(r, c);
+        selected = null;
+        switchPlayer();
+      }
+    }
   }
 }
