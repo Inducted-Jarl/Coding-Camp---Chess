@@ -3,13 +3,16 @@ class Bishop extends ChessPiece {
     super(p);
   }
   
-  ArrayList<MoveSpace> getLegalMoves() {
-    ArrayList arr = new ArrayList<PieceSpace>();
-    arr.addAll(ray(1, 1));
-    arr.addAll(ray(-1, 1));
-    arr.addAll(ray(1, -1));
-    arr.addAll(ray(-1, -1));
-    return getMovesFromSpaces(arr);
+  int pieceValue() {return 3;}
+  
+  ArrayList<Move> getMoves(Position p, int r, int f) {
+    super.setTemp(p, r, f);
+    ArrayList <Move> moves = new ArrayList<Move>();
+    moves.addAll(ray(1, 1));
+    moves.addAll(ray(-1, 1));
+    moves.addAll(ray(1, -1));
+    moves.addAll(ray(-1, -1));
+    return moves;
   }
   
   void show(float x, float y) {

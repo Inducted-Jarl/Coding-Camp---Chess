@@ -1,25 +1,27 @@
 class Queen extends ChessPiece {
   Queen (Player p) {
     super(p);
-    
   }
   
-  ArrayList<MoveSpace> getLegalMoves() {
-    ArrayList arr = new ArrayList<PieceSpace>();
+  int pieceValue() {return 9;}
+  
+ArrayList<Move> getMoves(Position p, int r, int f) {
+    super.setTemp(p, r, f);
+    ArrayList <Move> moves = new ArrayList<Move>();
     
     // up, down, and sideways
-    arr.addAll(ray(1, 0));
-    arr.addAll(ray(-1, 0));
-    arr.addAll(ray(0, 1));
-    arr.addAll(ray(0, -1));
+    moves.addAll(ray(1, 0));
+    moves.addAll(ray(-1, 0));
+    moves.addAll(ray(0, 1));
+    moves.addAll(ray(0, -1));
     
     // diagnols
-    arr.addAll(ray(1, 1));
-    arr.addAll(ray(-1, 1));
-    arr.addAll(ray(1, -1));
-    arr.addAll(ray(-1, -1));
+    moves.addAll(ray(1, 1));
+    moves.addAll(ray(-1, 1));
+    moves.addAll(ray(1, -1));
+    moves.addAll(ray(-1, -1));
     
-    return getMovesFromSpaces(arr);
+    return moves;
   }
   
   void show(float x, float y) {

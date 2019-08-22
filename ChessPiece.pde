@@ -1,70 +1,95 @@
 abstract class ChessPiece {
-  Player owner;
-  color col;
-  int r, c;
-  boolean hasMoved;
-  PieceSpace[][] spaces;
+  final Player owner;
+  final color col;
+  ChessPiece[][] pieces;
+  int rank, file;
   
-  ChessPiece(Player p) {
-    owner = p;
-    col = owner.col;
+  ChessPiece(Player owner) {
+    this.owner = owner;
+    this.col = owner.col;
   }
   
-  void setSpaces(PieceSpace[][] s) {
-    spaces = s;
+  void setTemp(Position p, int rank, int file) {
+    this.pieces = p.pieces;
+    this.rank = rank;
+    this.file = file;
+  }
+    
+  abstract ArrayList<Move> getMoves(Position p, int r, int f);
+  
+  ArrayList<Move> getLegalMoves(Position pos, int r, int f) {
+    ArrayList<Move> legalMoves = new ArrayList<Move> ();
+    ArrayList<Move> moves = this.getMoves(pos, r, f);
+    /*
+    
+    if(pos.inCheck != owner) return moves;
+    // check checking process
+    for(Move candidate : moves) {
+      // loop over candidates
+      Position testPosition = candidate.applyTo(p);
+      for(Move threatMove : candidate.threats) {
+        if(threatMove.isLegal(testPosition)) {
+          continue candidateLoop;
+        }
+      }
+    }
+    legalMoves.add(candidate);
+    // check checking process
+    */
+    return moves;
   }
   
+  abstract int pieceValue();
   abstract void show(float x, float y);
-  abstract ArrayList<MoveSpace> getLegalMoves();
   
-  void setPos(int r, int c) {
-    this.r = r;
-    this.c = c;
-  }
-  
-  ArrayList<MoveSpace> getMovesFromSpaces(ArrayList<PieceSpace> arr) {
-    ArrayList<MoveSpace> moves = new ArrayList<MoveSpace>();
-    for(PieceSpace p : arr) {
-      if(p == null) continue;
-      if(p.piece != null) {
-        if(p.piece.owner != this.owner) {
-          moves.add(new MoveSpace(p, true));
-          }
-        } else {
-          moves.add(new MoveSpace(p, false));
+  ArrayList<Move> ray(int xChange, int yChange) {
+    // returns a list of potential moves along a ray (for Rook, Bishop, Queen)
+    ArrayList<Move> moves = new ArrayList<Move>();
+    if(!owner.forward) yChange *= -1; // invert y if players moves other direction
+    int r2 = rank + yChange;
+    int f2 = file + xChange;
+    while(inBounds(r2, f2)) {
+      // as long as within bounds of board, add to list and apply change
+      if(pieces[r2][f2] != null) {
+        // collided with other piece, add to list then stop
+        if(pieces[r2][f2].owner != owner) moves.add(new Move(pieces, rank, file, r2, f2, Type.TAKE));
+        break;
+      } else {
+        // continue ray
+        moves.add(new Move(pieces, rank, file, r2, f2));
+        r2 += yChange;
+        f2 += xChange;
       }
     }
     return moves;
   }
   
-  ArrayList<PieceSpace> ray(int xChange, int yChange) {
-    // returns a list of potential moces along a ray (for Rook, Bishop, and Queen)
-    ArrayList<PieceSpace> arr = new ArrayList<PieceSpace>();
-    if(owner.forward) yChange *= -1; // invert y if players moves other direction
-    int x = c + xChange;
-    int y = r + yChange;
-    while(inBounds(x, y)) {
-      // as long as within bounds of board, add to list and apply change
-      arr.add(spaces[y][x]);
-      if(spaces[y][x].piece != null) break; // collided with other piece, add to list then stop
-      x += xChange;
-      y += yChange;
-    }
-    return arr;
+  Move at(int xChange, int yChange) {
+    if(!owner.forward) yChange *= -1; // invert y if players moves other direction
+    int r2 = rank + yChange;
+    int f2 = file + xChange;
+    if(!inBounds(r2, f2)) return null;
+    // as long as within bounds of board, add to list and apply change
+    if(pieces[r2][f2] == null) return new Move(pieces, rank, file, r2, f2);
+    else if(pieces[r2][f2].owner != owner) return new Move(pieces, rank, file, r2, f2, Type.TAKE);
+    return null;
   }
   
-  PieceSpace at(int xChange, int yChange) {
-    // returns Piecespace at (xChange, yChange) relative to this piece
-    if(owner.forward) yChange *= -1; // invert y if players moves other direction
-    if(!inBounds(r + yChange, c + xChange)) return null;
-    return spaces[r + yChange][c + xChange];
+  ChessPiece pieceAt(int xChange, int yChange) {
+    if(!owner.forward) yChange *= -1;
+    int r2 = rank + yChange;
+    int f2 = file + xChange;
+    if(!inBounds(r2, f2)) return null;
+    return pieces[r2][f2];
   }
   
-  boolean inBounds(int x, int y) {
-    return x >= 0 && x < 8 && y >= 0 && y < 8;
+  boolean inBounds(int r, int f) {
+    // returns if (x, y) is within board
+    return r >= 0 && r < 8 && f >= 0 && f < 8;
   }
   
   void pushAll(float x, float y) {
+    // apply translation and styling before drawing piece
     pushMatrix();
     translate(x, y);
     pushStyle();
@@ -73,6 +98,7 @@ abstract class ChessPiece {
   }
   
   void popAll() {
+    // remove translation and styling after drawing piece
     popStyle();
     popMatrix();
   }

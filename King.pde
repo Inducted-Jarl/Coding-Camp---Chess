@@ -3,22 +3,25 @@ class King extends ChessPiece {
     super (p);
   }
   
-  ArrayList<MoveSpace> getLegalMoves() {
-    ArrayList arr = new ArrayList<PieceSpace>();
+  int pieceValue() {return 15;}
+  
+  ArrayList<Move> getMoves(Position p, int r, int f) {
+    super.setTemp(p, r, f);
+    ArrayList <Move> moves = new ArrayList<Move>();
     
     // up, down, and sideways
-    arr.add(at(1, 0));
-    arr.add(at(-1, 0));
-    arr.add(at(0, 1));
-    arr.add(at(0, -1));
+    moves.add(at(1, 0));
+    moves.add(at(-1, 0));
+    moves.add(at(0, 1));
+    moves.add(at(0, -1));
     
     // diagnols
-    arr.add(at(1, 1));
-    arr.add(at(-1, 1));
-    arr.add(at(1, -1));
-    arr.add(at(-1, -1));
+    moves.add(at(1, 1));
+    moves.add(at(-1, 1));
+    moves.add(at(1, -1));
+    moves.add(at(-1, -1));
     
-    return getMovesFromSpaces(arr);
+    return moves;
   }
   
   void show(float x, float y) {
